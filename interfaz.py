@@ -39,25 +39,23 @@ def revisorCreadorFunction(linea):
 
 def revisorCreadorVariable(linea):
     sintaxisFunction =  False
-    if linea[0] + linea[1] == '(defvar':
-        if type(float(linea[2])) == float or type(int(linea[2])) == int:
+    if linea[0] == '(defvar':
+        if type(float(linea[1])) == float or type(int(linea[1])) == int:
             pass
         else:
-            if type(float(linea[3])) == float:
-                pass
-            elif type(int(linea[3])) == int and linea[4] == ')':
+            # problema
+            if type(int(linea[2])) == int and linea[3] == ')':
                 sintaxisFunction = True
     return sintaxisFunction
 
 def revisorAsignacionVariable(linea):
     sintaxisAsignador = False
-    if linea[0] + linea[1] == '(=':
-        if type(float(linea[2])) == float or type(int(linea[2])) == int:
+    if linea[0] == '(=':
+        if type(float(linea[1])) == float or type(int(linea[1])) == int:
             pass
         else:
-            if type(float(linea[3])) == float:
-                pass
-            elif type(int(linea[3])) == int and linea[4] == ')':
+            # problema
+            if type(int(linea[2])) == int and linea[3] == ')':
                 sintaxisAsignador = True
     return sintaxisAsignador
 
@@ -65,54 +63,67 @@ def revisorAsignacionVariable(linea):
 
 def revisorMovimiento(linea,variables):
     sintaxisMovement = False
-    if linea[0] + linea[1] + str(type(int(linea[2]))) + linea[3] == '(move' + str(int) + ')':
+    # problema
+    if linea[0] + str(type(int(linea[1]))) == '(move' + str(int) + ')':
         sintaxisMovement = True
         return sintaxisMovement
-    elif linea[0] + linea[1] == '(move':
-        if existeVariable(linea[2],variables) == True and linea[3] == ')':
+    elif linea[0] == '(move':
+        # problema
+        if existeVariable(linea[1],variables) == True and linea[2] == ')':
             sintaxisMovement = True
             return sintaxisMovement
-    elif linea[0] + linea[1] == '(turn':
-        if linea[2] + linea[3] == ':left)' or linea[2] + linea[3] == ':right)' or linea[2] + linea[3] == ':around)':
+    elif linea[0] == '(turn':
+        if linea[1] == ':left)' or linea[1] == ':right)' or linea[1] == ':around)':
             sintaxisMovement = True
             return sintaxisMovement
-    elif linea[0] + linea[1] == '(face':
-        if linea[2] + linea[3] == ':north)' or linea[2] + linea[3] == ':south)' or linea[2] + linea[3] == ':east)' or linea[2] + linea[3] == (':west)'):
+    elif linea[0] == '(face':
+        if linea[1] == ':north)' or linea[1] == ':south)' or linea[1] == ':east)' or linea[1] == (':west)'):
             sintaxisMovement = True
             return sintaxisMovement
-    elif linea[0] + linea[1] == '(put':
-        if linea[2] == 'Balloons' or linea[2] == 'Chips':
-            if type(int(linea[3])) == int:
+    elif linea[0] == '(put':
+        if linea[1] == 'Balloons' or linea[1] == 'Chips':
+            if type(int(linea[2])) == int:
                 sintaxisMovement = True
                 return sintaxisMovement
-            elif existeVariable(linea[3],variables) == True and linea[4] == ')':
+            # problema
+            elif existeVariable(linea[2],variables) == True and linea[3] == ')':
                 sintaxisMovement = True
                 return sintaxisMovement
-    elif linea[0] + linea[1] == '(pick':
-        if linea[2] == 'Balloons' or linea[2] == 'Chips':
-            if type(int(linea[3])) == int and linea[4] == ')':
+    elif linea[0] == '(pick':
+        if linea[1] == 'Balloons' or linea[1] == 'Chips':
+            # problema
+            if type(int(linea[2])) == int and linea[3] == ')':
                 sintaxisMovement = True
                 return sintaxisMovement
-            elif existeVariable(linea[3],variables) == True and linea[4] == ')':
+            # problema
+            elif existeVariable(linea[2],variables) == True:
                 sintaxisMovement = True
                 return sintaxisMovement
-    elif linea[0] + linea[1] == '(move-dir':
-        if type(int(linea[2])) == int:
-            if linea[3] + linea[4] == ':north)' or linea[3] + linea[4] == ':south)' or linea[3] + linea[4] == ':east)' or linea[3] + linea[4] == (':west)'):
+    elif linea[0] == '(move-dir':
+        if type(int(linea[1])) == int:
+            if linea[2] == ':north)' or linea[2] == ':south)' or linea[2] == ':east)' or linea[2] == (':west)'):
                 sintaxisMovement = True
                 return sintaxisMovement
-        elif existeVariable(linea[2],variables) == True: 
-            if linea[3] + linea[4] == ':north)' or linea[3] + linea[4] == ':south)' or linea[3] + linea[4] == ':east)' or linea[3] + linea[4] == (':west)'):   
+        elif existeVariable(linea[1],variables) == True: 
+            if linea[2] == ':north)' or linea[2] == ':south)' or linea[2] == ':east)' or linea[2] == (':west)'):   
+                sintaxisMovement = True
+                return sintaxisMovement
+    elif linea[0] == '(run-dirs':
+        for direction in linea[1]:
+            if direction == ':north)' or direction == ':south)' or direction == ':east)' or direction == ':west)':
                 sintaxisMovement = True
                 return sintaxisMovement
 
+    elif linea[0] == '(move-face':
+        if type(int(linea[1])) == int:
+            if linea[2] == ':north)' or linea[2] == ':south)' or linea[2] == ':east)' or linea[2] == (':west)'):
+                sintaxisMovement = True
+                return sintaxisMovement
+        elif existeVariable
 
 
-    elif linea[0] + linea[1] == '(run-dirs':
-        return sintaxisMovement
-    elif linea[0] + linea[1] == '(move-face':
-        return sintaxisMovement
-    elif linea[0] + linea[1] + linea[2] == '(skip' +')':
+    elif linea[0] == '(skip)':
+        sintaxisMovement = True
         return sintaxisMovement
 
 # ----------------
